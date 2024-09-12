@@ -64,6 +64,13 @@ Architectures
   * The stack traces upon fatal exception now prints the address of stack pointer (sp) or frame
     pointer (fp) depending on the build configuration.
 
+  * When :kconfig:option:`CONFIG_EXTRA_EXCEPTION_INFO` is enabled, the exception stack frame (arch_esf)
+    has an additional field ``csf`` that points to the callee-saved-registers upon an fatal error,
+    which can be accessed in :c:func:`k_sys_fatal_error_handler` by ``esf->csf``.
+
+    * For SoCs that select `RISCV_SOC_HAS_ISR_STACKING`, the `SOC_ISR_STACKING_ESF_DECLARE` has to
+      include the `csf` member, otherwise the build would fail.
+
 * Xtensa
 
 * x86
@@ -317,6 +324,11 @@ Libraries / Subsystems
 
   * Mbed TLS was updated to version 3.6.1. The release notes can be found at:
     https://github.com/Mbed-TLS/mbedtls/releases/tag/mbedtls-3.6.1
+  * The Kconfig symbol :kconfig:option:`CONFIG_MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG_ALLOW_NON_CSPRNG`
+    was added to allow ``psa_get_random()`` to make use of non-cryptographically
+    secure random sources when :kconfig:option:`CONFIG_MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG`
+    is also enabled. This is only meant to be used for test purposes, not in production.
+    (:github:`76408`)
 
 * CMSIS-NN
 
